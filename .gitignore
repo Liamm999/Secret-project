@@ -10,3 +10,6 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
+# Runtime data
+.vscode
