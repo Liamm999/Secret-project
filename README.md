@@ -8,3 +8,6 @@
 
 This zip file contains a single folder which is your project’s root folder. You should use
 the format "wpr<student_id>" to name your project folder
+
+
+**recommend using extensions "ejs language support and ejs Snippets"

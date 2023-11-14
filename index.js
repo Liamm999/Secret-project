@@ -17,7 +17,9 @@ app.use(express.static("public"));
 
 // Example:
 app.get("/", function (req, res) {
-  res.render("index");
+  res.render("index", {
+    title: "Hello motherfucker",
+  });
 });
 
 app.use(express.static("public"));
