@@ -11,5 +11,5 @@ pids
 *.seed
 *.pid.lock
 
-# Runtime data
+# vscode
 .vscode
