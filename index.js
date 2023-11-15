@@ -1,14 +1,7 @@
 "use strict";
 const express = require("express");
 const app = express();
-const mysql = require("mysql2");
-
-// var con = mysql.createConnection({
-//   host: "localhost",
-//   user: "wpr",
-//   password: "fit2023",
-//   database: "wpr2023",
-// });
+const createTables = require("./dbsetup");
 
 app.set("view engine", "ejs");
 
