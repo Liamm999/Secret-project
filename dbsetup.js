@@ -5,11 +5,11 @@ const connection = mysql
     host: "localhost",
     user: "wpr",
     password: "fit2023",
-    database: "wpr2023",
+    port: 3306,
   })
   .promise();
 
-const createTables = async () => {
+const createDatabase = async () => {
   try {
     // Connect to MySQL server
     await connection.connect();
@@ -45,13 +45,13 @@ const createTables = async () => {
       )
     `);
 
-    initTableData();
+    initData();
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
-const initTableData = async () => {
+const initData = async () => {
   try {
     await connection.connect();
 
@@ -118,4 +118,4 @@ const initTableData = async () => {
   }
 };
 
-createTables();
+createDatabase();
