@@ -1,7 +1,6 @@
 "use strict";
 const express = require("express");
 const app = express();
-const createTables = require("./dbsetup");
 
 app.set("view engine", "ejs");
 

@@ -1,3 +1,5 @@
+*** run `node dbsetup.js` firstly to set up the database***
+
 1. npm install
 
 2. npm start (nodemon installed)
