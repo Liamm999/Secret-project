@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outbox page</title>
+</head>
+
+<body>
+    <h1>
+        Outbox
+    </h1>
+    <div>
+        <ul>
+            <% sentEmailList.forEach(function(sentEmail) { %>
+            <li>
+                <strong><%= sentEmail.recipient_username %></strong>
+                subject <%= sentEmail.subject %>,
+                sent at <%= sentEmail.sent_at %>,
+                id <%= sentEmail.id %>
+            </li>
+            <% }); %>
+        </ul>
+    </div>
+</body>
+
+</html>

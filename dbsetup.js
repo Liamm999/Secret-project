@@ -1,13 +1,5 @@
-const mysql = require("mysql2");
-
-const connection = mysql
-  .createConnection({
-    host: "localhost",
-    user: "wpr",
-    password: "fit2023",
-    port: 3306,
-  })
-  .promise();
+const { createMySQLConnection } = require('./dbconn')
+const connection = createMySQLConnection()
 
 const createDatabase = async () => {
   try {
