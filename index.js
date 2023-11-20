@@ -28,7 +28,7 @@ app.use(express.static("public"));
 
 const getUserIdFromReq = (req) => {
   var userId = req.headers['user-id']
-  if (userId === undefined) userId = 1
+  if (userId === undefined) userId = 1 // TODO: remove this when finish the project
   return userId
 }
 
