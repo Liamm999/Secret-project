@@ -1,5 +1,6 @@
 "use strict";
 const express = require("express");
+const { route } = require("./routes");
 const app = express();
 
 app.set("view engine", "ejs");
@@ -7,12 +8,13 @@ app.set("view engine", "ejs");
 // stattic files inside public folder
 app.use(express.static("public"));
 
-// Example:
-app.get("/", function (req, res) {
-  res.render("index", {
-    title: "Hello motherfucker",
-  });
-});
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
-app.use(express.static("public"));
+app.use(express.json());
+
+route(app);
 app.listen(8000);
