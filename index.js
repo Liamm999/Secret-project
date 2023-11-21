@@ -52,7 +52,10 @@ const getUserIdFromReq = (req) => {
 
 app.get("/outbox", async (req, res) => {
   const userId = getUserIdFromReq(req);
-  if (userId === undefined) res.render("err", { errMsg: "Require user id" });
+  if (userId === undefined) {
+    res.render("err", { errMsg: "Require user id" });
+    return;
+  }
 
   var limit = req.query.limit;
   if (limit === undefined) limit = 10;
