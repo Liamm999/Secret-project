@@ -2,7 +2,7 @@
 
 *** 
 Account to sign in:<br>
-email: a@a.com;
+email: a@a.com<br>
 password: A123
 ***
 
