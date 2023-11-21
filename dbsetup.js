@@ -1,5 +1,6 @@
-const { createMySQLConnection } = require('./dbconn')
-const connection = createMySQLConnection()
+const { createMySQLConnection } = require("./dbconn");
+
+const connection = createMySQLConnection();
 
 const createDatabase = async () => {
   try {
