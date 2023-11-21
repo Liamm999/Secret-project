@@ -11,11 +11,21 @@
 const express = require("express");
 const app = express();
 const { createMySQLConnection } = require("./dbconn");
+const { route } = require("./routes");
 
 app.set("view engine", "ejs");
 
 // stattic files inside public folder
 app.use(express.static("public"));
+
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+app.use(express.json());
+
+route(app);
 
 /*
 =================================================================================================================================
@@ -30,20 +40,6 @@ const getUserIdFromReq = (req) => {
   if (userId === undefined) userId = 1; // TODO: remove this when finish the project
   return userId;
 };
-
-/*
-=================================================================================================================================
-
-                                    INDEX PAGE
-
-=================================================================================================================================
-*/
-
-app.get("/", function (req, res) {
-  res.render("index", {
-    title: "Buddha bless this project",
-  });
-});
 
 /*
 =================================================================================================================================

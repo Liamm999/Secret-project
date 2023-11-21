@@ -1,9 +1,6 @@
+const signinRouter = require("./signin.route");
 function route(app) {
-  app.get("/", function (req, res) {
-    res.render("index", {
-      title: "Hello motherfucker",
-    });
-  });
+  app.use("/", signinRouter);
 }
 
 module.exports = { route };

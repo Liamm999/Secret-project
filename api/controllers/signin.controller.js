@@ -1,5 +1,9 @@
-module.exports = class signInController {
+class signInController {
   index(req, res) {
-    res.render("news");
+    res.render("signin", {
+      title: "Sign in page",
+    });
   }
-};
+}
+
+module.exports = signInController;
