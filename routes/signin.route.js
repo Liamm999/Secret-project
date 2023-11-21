@@ -5,6 +5,7 @@ const signInController = new SignInController();
 
 const router = express.Router();
 
-router.use("/", signInController.index);
+router.get("/", signInController.index);
+router.post("/signin", signInController.signIn);
 
 module.exports = router;

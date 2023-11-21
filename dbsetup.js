@@ -1,5 +1,4 @@
 const { createMySQLConnection } = require("./dbconn");
-
 const connection = createMySQLConnection();
 
 const createDatabase = async () => {
@@ -17,7 +16,6 @@ const createDatabase = async () => {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS user (
         id INT PRIMARY KEY AUTO_INCREMENT,
-        username VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL
       )
@@ -50,18 +48,18 @@ const initData = async () => {
 
     // users
     await connection.query(`
-      INSERT IGNORE INTO user (username, email, password)
-      VALUES ('Nguyen Van A', 'a@a.com', 'A123')
+      INSERT IGNORE INTO user (email, password)
+      VALUES ('a@a.com', 'A123')
     `);
 
     await connection.query(`
-      INSERT IGNORE INTO user (username, email, password)
-      VALUES ('John Wick', 'dontkilmydog@gmail.com', 'John12345')
+      INSERT IGNORE INTO user (email, password)
+      VALUES ('JohnWick@gmail.com', 'John12345')
     `);
 
     await connection.query(`
-      INSERT IGNORE INTO user (username, email, password)
-      VALUES ('Test user', 'user@test.com', 'Test12345')
+      INSERT IGNORE INTO user (email, password)
+      VALUES ('user@test.com', 'Test12345')
     `);
 
     // email

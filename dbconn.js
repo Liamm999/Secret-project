@@ -9,8 +9,8 @@ const createMySQLConnection = () => {
       port: 3306,
     })
     .promise();
-}
+};
 
 module.exports = {
-  createMySQLConnection
-}
+  createMySQLConnection,
+};

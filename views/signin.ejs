@@ -8,12 +8,67 @@
 </head>
 
 <body>
-    <h1>
-        <p>
-            <%= title %>
-        </p>
-
-    </h1>
+    <form class="signin__container">
+        <h1>Sign in to continue</h1>
+        <input id="email" type="email" name="email" placeholder="email..." required>
+        <input id="password" type="password" name="password" placeholder="password..." required>
+        <button type="submit" id="signInBtn">Sign in</button>
+    </form>
 </body>
+<style>
+    .signin__container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    input {
+        width: 300px;
+        height: 50px;
+    }
+</style>
+
+<script lang="js">
+    const email = document.getElementById('email')
+    const password = document.getElementById('password')
+    const signInBtn = document.getElementById('signInBtn')
+
+    const signIn = async (event) => {
+        event.preventDefault();
+
+        if (email.value.length <= 0) {
+            alert("Please enter your email address")
+            return
+        } else if (password.value.length <= 0) {
+            alert("Please enter your password")
+            return
+        }
+
+        const formData = { email: email.value, password: password.value }
+
+        try {
+            const response = await fetch('/signin', {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            })
+            const result = await response.json()
+            if (result.error) {
+                alert(result.error)
+            } else {
+                // need to redirect to "inbox" page
+                window.location.replace('/outbox')
+            }
+        } catch (err) {
+            throw new Error(err.message)
+        }
+    }
+
+    signInBtn.addEventListener('click', signIn)
+
+</script>
 
 </html>

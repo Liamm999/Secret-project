@@ -9,6 +9,7 @@
 "use strict";
 
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const app = express();
 const { createMySQLConnection } = require("./dbconn");
 const { route } = require("./routes");
@@ -24,6 +25,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 
 route(app);
 
@@ -36,8 +38,7 @@ route(app);
 */
 
 const getUserIdFromReq = (req) => {
-  var userId = req.headers["user-id"];
-  if (userId === undefined) userId = 1; // TODO: remove this when finish the project
+  const userId = req.cookies.userId;
   return userId;
 };
 
@@ -60,7 +61,7 @@ app.get("/outbox", async (req, res) => {
   if (offset === undefined) offset = 0;
 
   const sql =
-    'SELECT  \
+    "SELECT  \
     wpr2023.email.id, \
     wpr2023.email.sender_id, \
     wpr2023.email.recipient_id, \
@@ -68,13 +69,13 @@ app.get("/outbox", async (req, res) => {
     wpr2023.email.body, \
     wpr2023.email.attachment_path, \
     wpr2023.email.sent_at, \
-    wpr2023.user.username as "recipient_username" \
+    wpr2023.user.email \
     FROM wpr2023.email \
     \
     LEFT JOIN wpr2023.user ON  \
     wpr2023.email.recipient_id=wpr2023.user.id \
     \
-    WHERE sender_id= ' +
+    WHERE sender_id= " +
     userId +
     " \
     \

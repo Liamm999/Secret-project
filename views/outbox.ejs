@@ -14,13 +14,24 @@
     <div>
         <ul>
             <% sentEmailList.forEach(function(sentEmail) { %>
-            <li>
-                <strong><%= sentEmail.recipient_username %></strong>
-                subject <%= sentEmail.subject %>,
-                sent at <%= sentEmail.sent_at %>,
-                id <%= sentEmail.id %>
-            </li>
-            <% }); %>
+                <li>
+                    <div>
+                        <strong>
+                            <%= sentEmail.email %>
+                        </strong>
+                    </div>
+                    <div>
+                        id: <%= sentEmail.id %>
+                    </div>
+                    <div>
+                        <span>Subject:</span>
+                        <%= sentEmail.subject %>,
+                    </div>
+                    <div>
+                        sent at: <%= sentEmail.sent_at %>,
+                    </div>
+                </li>
+                <% }); %>
         </ul>
     </div>
 </body>

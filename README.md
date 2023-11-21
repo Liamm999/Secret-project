@@ -1,5 +1,12 @@
 *** run `node dbsetup.js` firstly to set up the database***
 
+*** 
+Account to sign in:
+email: a@a.com
+password: A123
+***
+
+
 1. npm install
 
 2. npm start (nodemon installed)
