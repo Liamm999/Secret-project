@@ -1,8 +1,8 @@
 *** run `node dbsetup.js` firstly to set up the database***
 
 *** 
-Account to sign in:
-email: a@a.com
+Account to sign in:<br>
+email: a@a.com;
 password: A123
 ***
 
