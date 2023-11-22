@@ -16,6 +16,7 @@ const createDatabase = async () => {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS user (
         id INT PRIMARY KEY AUTO_INCREMENT,
+        username VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL
       )
@@ -48,18 +49,18 @@ const initData = async () => {
 
     // users
     await connection.query(`
-      INSERT IGNORE INTO user (email, password)
-      VALUES ('a@a.com', 'A123')
+      INSERT IGNORE INTO user (username, email, password)
+      VALUES ('AAAAAA', 'a@a.com', 'A123')
     `);
 
     await connection.query(`
-      INSERT IGNORE INTO user (email, password)
-      VALUES ('JohnWick@gmail.com', 'John12345')
+      INSERT IGNORE INTO user (username, email, password)
+      VALUES ('John Wick', 'dontkillmydog@gmail.com', 'John12345')
     `);
 
     await connection.query(`
-      INSERT IGNORE INTO user (email, password)
-      VALUES ('user@test.com', 'Test12345')
+      INSERT IGNORE INTO user (username, email, password)
+      VALUES ('test user', 'user@test.com', 'Test12345')
     `);
 
     // email
@@ -70,7 +71,7 @@ const initData = async () => {
 
     await connection.query(`
       INSERT INTO email (sender_id, recipient_id, subject, body, attachment_path, sent_at)
-      VALUES (1, 2, 'Test email again', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet neque eu mi dignissim dictum sit amet eu nisi. Praesent blandit felis eu nibh imperdiet, et molestie velit dictum. Sed et sodales est. Praesent a congue felis. Nullam auctor imperdiet augue sed vestibulum. Aliquam suscipit sed nisi quis pretium. Pellentesque et ornare nulla, mollis imperdiet nibh. Aenean ac dui semper, ornare mi eget, dignissim nunc.', '', '2023-11-16 00:41')
+      VALUES (1, 3, 'Test email again', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet neque eu mi dignissim dictum sit amet eu nisi. Praesent blandit felis eu nibh imperdiet, et molestie velit dictum. Sed et sodales est. Praesent a congue felis. Nullam auctor imperdiet augue sed vestibulum. Aliquam suscipit sed nisi quis pretium. Pellentesque et ornare nulla, mollis imperdiet nibh. Aenean ac dui semper, ornare mi eget, dignissim nunc.', '', '2023-11-16 00:41')
   `);
 
     await connection.query(`
@@ -90,7 +91,7 @@ const initData = async () => {
 
     await connection.query(`
       INSERT INTO email (sender_id, recipient_id, subject, body, attachment_path, sent_at)
-      VALUES (1, 2, 'Test email again', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet neque eu mi dignissim dictum sit amet eu nisi. Praesent blandit felis eu nibh imperdiet, et molestie velit dictum. Sed et sodales est. Praesent a congue felis. Nullam auctor imperdiet augue sed vestibulum. Aliquam suscipit sed nisi quis pretium. Pellentesque et ornare nulla, mollis imperdiet nibh. Aenean ac dui semper, ornare mi eget, dignissim nunc.', '', '2023-11-16 00:41')
+      VALUES (1, 3, 'Test email again', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet neque eu mi dignissim dictum sit amet eu nisi. Praesent blandit felis eu nibh imperdiet, et molestie velit dictum. Sed et sodales est. Praesent a congue felis. Nullam auctor imperdiet augue sed vestibulum. Aliquam suscipit sed nisi quis pretium. Pellentesque et ornare nulla, mollis imperdiet nibh. Aenean ac dui semper, ornare mi eget, dignissim nunc.', '', '2023-11-16 00:41')
   `);
 
     await connection.query(`
