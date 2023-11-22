@@ -102,25 +102,28 @@ app.get("/signup", (req, res) => {
 
 // Sign up API endpoint
 app.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
-  const sql = `SELECT * FROM wpr2023.user WHERE email = ? AND password = ?`;
+  const { fullname, email, password } = req.body;
+
+  const searchEmailSql = `SELECT * FROM wpr2023.user WHERE email = ?`;
+  const signupSql = `
+    INSERT INTO wpr2023.user (username, email, password)
+    VALUES (?, ?, ?)
+    `;
 
   const conn = await createMySQLConnection();
 
   try {
-    const [results] = await conn.execute(sql, [email, password]);
+    const [results] = await conn.query(searchEmailSql, [email]);
 
     if (results.length > 0) {
-      const user = results[0];
-      res.cookie("userId", user.id, {
-        httpOnly: true,
-      });
-      return res.status(200).json(user);
-    } else {
-      return res.status(401).json({ error: "Invalid email or password" });
+      return res.status(401).json({ error: "Email has existed" });
     }
+
+    await conn.query(signupSql, [fullname, email, password]);
+    return res.status(200).json("Sucess");
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
   } finally {
     conn.end();
   }

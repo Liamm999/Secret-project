@@ -9,13 +9,16 @@
 
 <body>
     <form class="signup__container">
+        <h1>Welcome to our world!</h1>
         <h1>
             <%= title %>
         </h1>
+        <input id="fullname" type="text" name="fullname" placeholder="fullname..." required>
         <input id="email" type="email" name="email" placeholder="email..." required>
         <input id="password" type="password" name="password" placeholder="password..." required>
-        <button type="submit" id="signInBtn">Sign in</button>
-        <a href="/signup">Or Sign Up</a>
+        <input id="rePass" type="password" name="rePass" placeholder="re-enter password..." required>
+        <button type="submit" id="signupBtn">Sign up</button>
+        <a href="/">Or Sign In</a>
     </form>
 </body>
 <style>
@@ -32,26 +35,34 @@
     }
 </style>
 
-<!-- <script lang="js">
+<script lang="js">
+    const fullname = document.getElementById("fullname");
     const email = document.getElementById('email')
     const password = document.getElementById('password')
-    const signInBtn = document.getElementById('signInBtn')
+    const rePass = document.getElementById('rePass');
+    const signupBtn = document.getElementById('signupBtn')
 
-    const signIn = async (event) => {
+    const signup = async (event) => {
         event.preventDefault();
 
-        if (email.value.length <= 0) {
+        if (fullname.value.length <= 0) {
+            alert("Please enter your fullname")
+            return
+        } else if (email.value.length <= 0) {
             alert("Please enter your email address")
             return
-        } else if (password.value.length <= 0) {
-            alert("Please enter your password")
+        } else if (password.value.length < 6) {
+            alert("Password must be at least 6 characters")
+            return
+        } else if (password.value !== rePass.value) {
+            alert("Re-enter password is not similar to your password")
             return
         }
 
-        const formData = { email: email.value, password: password.value }
+        const formData = { fullname: fullname.value, email: email.value, password: password.value }
 
         try {
-            const response = await fetch('/signin', {
+            const response = await fetch('/signup', {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json",
@@ -62,16 +73,16 @@
             if (result.error) {
                 alert(result.error)
             } else {
-                // change redirect to "/inbox" when finishe "inbox" page
-                window.location.replace('/outbox')
+                alert(result)
+                window.location.replace('/')
             }
         } catch (err) {
             throw new Error(err.message)
         }
     }
 
-    signInBtn.addEventListener('click', signIn)
+    signupBtn.addEventListener('click', signup)
 
-</script> -->
+</script>
 
 </html>
