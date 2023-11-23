@@ -39,6 +39,10 @@ const getUserIdFromReq = (req) => {
   return userId;
 };
 
+const getUsernameFromReq = (req) => {
+  const username = req.cookies.username;
+  return username;
+};
 /*
 =================================================================================================================================
 
@@ -48,7 +52,7 @@ const getUserIdFromReq = (req) => {
 */
 
 app.get("/", (req, res) => {
-  const userId = req.cookies.userId;
+  const userId = getUserIdFromReq(req);
 
   if (userId) {
     // change redirect to "/inbox" when finishe "inbox" page
@@ -73,6 +77,9 @@ app.post("/signin", async (req, res) => {
     if (results.length > 0) {
       const user = results[0];
       res.cookie("userId", user.id, {
+        httpOnly: true,
+      });
+      res.cookie("username", user.username, {
         httpOnly: true,
       });
       return res.status(200).json(user);
