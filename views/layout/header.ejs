@@ -6,25 +6,30 @@
     <link rel="stylesheet" href="/css/index.css">
     <title>WPR</title>
 </head>
-
 <body>
     <div class="header__container">
-        <h1 class="header__container--title">
+        <div class="header__container--title">
             <h4>Username</h4>
-            <button>Sign out</button>
-        </h1>
+            <button class="btn">Sign out</button>
+            
+        </div>
     </div>
 </body> 
 
 <style>
     .header__container {
         background-color: beige;
-        height: 5%;
     }
 
     .header__container--title {
-        margin: 0;
-
+        margin: 0 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .btn {
+        height: fit-content;
+        padding: 8px 16px;
     }
 </style>
 
