@@ -160,6 +160,8 @@ app.post("/signout", (req, res) => {
 
 app.get("/outbox", async (req, res) => {
   const userId = getUserIdFromReq(req);
+  const username = getUsernameFromReq(req);
+
   if (userId === undefined) {
     res.render("err", { errMsg: "Require user id" });
     return;
@@ -204,6 +206,7 @@ app.get("/outbox", async (req, res) => {
     sentEmailList: rows,
     limit,
     offset,
+    username,
   });
 });
 
@@ -220,7 +223,22 @@ app.get("/inbox", (req, res) => {
   res.render("inbox", {
     title: "This is a motherfucker inbox",
     username,
-    res,
+  });
+});
+
+/*
+=================================================================================================================================
+
+                                    COMPOSE PAGE
+
+=================================================================================================================================
+*/
+
+app.get("/compose", (req, res) => {
+  const username = getUsernameFromReq(req);
+  res.render("compose", {
+    title: "This is a motherfucker compose page",
+    username,
   });
 });
 
@@ -234,6 +252,8 @@ app.get("/inbox", (req, res) => {
 
 app.get("/email-detail", async (req, res) => {
   const userId = getUserIdFromReq(req);
+  const username = getUsernameFromReq(req);
+
   if (userId === undefined) res.render("err", { errMsg: "Require user id" });
 
   var emailId = req.query.emailId;
@@ -261,7 +281,7 @@ app.get("/email-detail", async (req, res) => {
     return;
   }
 
-  res.render("emaildetail", { email: rows[0] });
+  res.render("emaildetail", { email: rows[0], username });
 });
 
 /*

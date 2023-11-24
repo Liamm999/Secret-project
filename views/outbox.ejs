@@ -8,34 +8,34 @@
 </head>
 
 <body>
-    <%- include('layout/header') %>
-    <%- include('layout/menu') %>
-    <h1>
-        Outbox
-    </h1>
-    <div>
-        <ul>
-            <% sentEmailList.forEach(function(sentEmail) { %>
-                <li>
-                    <div>
-                        <strong>
-                            <%= sentEmail.recipient_fullname %>
-                        </strong>
-                    </div>
-                    <div>
-                        id: <%= sentEmail.id %>
-                    </div>
-                    <div>
-                        <span>Subject:</span>
-                        <%= sentEmail.subject %>,
-                    </div>
-                    <div>
-                        sent at: <%= sentEmail.sent_at %>,
-                    </div>
-                </li>
-                <% }); %>
-        </ul>
-    </div>
+    <%- include('layout/header', { username: username }) %>
+        <%- include('layout/menu') %>
+            <h1>
+                Outbox
+            </h1>
+            <div>
+                <ul>
+                    <% sentEmailList.forEach(function(sentEmail) { %>
+                        <li>
+                            <div>
+                                <strong>
+                                    <%= sentEmail.recipient_fullname %>
+                                </strong>
+                            </div>
+                            <div>
+                                id: <%= sentEmail.id %>
+                            </div>
+                            <div>
+                                <span>Subject:</span>
+                                <%= sentEmail.subject %>,
+                            </div>
+                            <div>
+                                sent at: <%= sentEmail.sent_at %>,
+                            </div>
+                        </li>
+                        <% }); %>
+                </ul>
+            </div>
 </body>
 
 </html>

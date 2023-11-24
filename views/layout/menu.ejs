@@ -6,13 +6,14 @@
     <link rel="stylesheet" href="/css/index.css">
     <title>WPR</title>
 </head>
+
 <body>
     <div class="menu__container">
-        <div class="menu__item">Compose</div>
-        <div class="menu__item">Inbox</div>
-        <div class="menu__item">Outbox</div>
+        <div id="compose" class="menu__item">Compose</div>
+        <div id="inbox" class="menu__item">Inbox</div>
+        <div id="outbox" class="menu__item">Outbox</div>
     </div>
-</body> 
+</body>
 
 <style>
     .menu__container {
@@ -21,7 +22,8 @@
         margin-right: 32px;
 
     }
-    .menu__item{
+
+    .menu__item {
         padding: 8px 16px;
         cursor: pointer;
         width: 200px;
@@ -29,17 +31,37 @@
         font-size: 14px;
         font-style: normal;
         line-height: normal;
-        border-top-right-radius: 32px; 
-border-bottom-right-radius: 32px; 
+        border-top-right-radius: 32px;
+        border-bottom-right-radius: 32px;
     }
-    .menu__item:hover{
+
+    .menu__item:hover {
         background: #F1F3F4;
     }
-    .menu-active{
+
+    .menu-active {
         background: #F9E9E7;
         color: #C84031;
         font-weight: 700;
     }
 </style>
+
+<script>
+    const compose = document.getElementById("compose");
+    const inbox = document.getElementById("inbox");
+    const outbox = document.getElementById("outbox");
+
+    compose.addEventListener("click", () => {
+        window.location.replace("/compose")
+    })
+
+    inbox.addEventListener("click", () => {
+        window.location.replace("/inbox")
+    })
+
+    outbox.addEventListener("click", () => {
+        window.location.replace("/outbox")
+    })
+</script>
 
 </html>
