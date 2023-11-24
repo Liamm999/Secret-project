@@ -43,6 +43,7 @@ const getUsernameFromReq = (req) => {
   const username = req.cookies.username;
   return username;
 };
+
 /*
 =================================================================================================================================
 
@@ -55,8 +56,7 @@ app.get("/", (req, res) => {
   const userId = getUserIdFromReq(req);
 
   if (userId) {
-    // change redirect to "/inbox" when finishe "inbox" page
-    return res.redirect("/outbox");
+    return res.redirect("/inbox");
   } else {
     res.render("signin", {
       title: "Sign in page",
@@ -139,6 +139,20 @@ app.post("/signup", async (req, res) => {
 /*
 =================================================================================================================================
 
+                                    SIGNOUT FEATURE
+
+=================================================================================================================================
+*/
+
+app.post("/signout", (req, res) => {
+  res.clearCookie("userId");
+  res.clearCookie("username");
+  return res.status(200).json({ message: "success" });
+});
+
+/*
+=================================================================================================================================
+
                                     OUTBOX PAGE
 
 =================================================================================================================================
@@ -196,13 +210,18 @@ app.get("/outbox", async (req, res) => {
 /*
 =================================================================================================================================
 
-                                    SINGIN PAGE
+                                    INBOX PAGE
 
 =================================================================================================================================
 */
 
 app.get("/inbox", (req, res) => {
-  res.render("inbox", { title: "This is a motherfucker inbox" });
+  const username = getUsernameFromReq(req);
+  res.render("inbox", {
+    title: "This is a motherfucker inbox",
+    username,
+    res,
+  });
 });
 
 /*

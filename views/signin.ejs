@@ -62,8 +62,7 @@
             if (result.error) {
                 alert(result.error)
             } else {
-                // change redirect to "/inbox" when finishe "inbox" page
-                window.location.replace('/outbox')
+                window.location.replace('/inbox')
             }
         } catch (err) {
             throw new Error(err.message)

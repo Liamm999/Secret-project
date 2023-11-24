@@ -6,12 +6,15 @@
     <link rel="stylesheet" href="/css/index.css">
     <title>WPR</title>
 </head>
+
 <body>
     <div class="header__container">
         <div class="header__container--title">
-            <h4>Username</h4>
-            <button class="btn">Sign out</button>
-            
+            <h4>
+                <%= username %>
+            </h4>
+            <button id="btn">Sign out</button>
+
         </div>
     </div>
 </body>
@@ -27,10 +30,32 @@
         justify-content: space-between;
         align-items: center;
     }
-    .btn {
+
+    #btn {
         height: fit-content;
         padding: 8px 16px;
     }
 </style>
+
+<script>
+    const btn = document.getElementById("btn");
+
+    const signOut = async () => {
+        try {
+            const response = await fetch('/signout', {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            alert("Sign out successfully!")
+            window.location.replace('/')
+        } catch (err) {
+            throw new Error(err.message)
+        }
+    }
+
+    btn.addEventListener("click", signOut)
+</script>
 
 </html>
