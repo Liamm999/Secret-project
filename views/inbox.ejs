@@ -1,18 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inbox</title>
-</head>
+  </head>
 
-<body>
-    <%- include('layout/header', { username: username }) %>
-        <%- include('layout/menu') %>
-            <h1>
-                <%= title %>
-            </h1>
-</body>
+  <body>
+    <%- include('layout/header', { username: username }) %> <%-
+    include('layout/menu') %>
+    <div class="inbox-list">
+      <div class="inbox-item">
+        <div class="inbox-sender">
+            <input type="checkbox" id="inbox" name="inbox" value="yes">
+<label for="inbox"></label>
+            <p>Sender</p>
+        </div>
+        <p class="inbox-title">Hello this is title</p>
+        <div class="inbox-action">
+            <p class="inbox-time">12:01 PM</p>
+            <button class="btn-delete">Delete</button>
+        </div>
+        
+      </div>
+    </div>
+  </body>
 
+  <style>
+    .inbox-list {
+      width: 100%;
+    }
+    .inbox-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border: 1px solid #ebeef4;
+    }
+    .inbox-sender{
+        width: 20%;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+    .inbox-title{
+        width: 70%;
+    }
+    .inbox-action{
+        width: 10%;
+        text-align: right;  
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+.btn-delete{
+    height: fit-content;
+    width: fit-content;
+}
+  </style>
 </html>
