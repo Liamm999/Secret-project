@@ -44,6 +44,26 @@ const getUsernameFromReq = (req) => {
   return username;
 };
 
+const formatDate = (date) => {
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  const formattedDate = formatter.format(date);
+
+  const [datePart, timePart] = formattedDate.split(", ");
+  const [month, day, year] = datePart.split("/");
+  const [hour, minute] = timePart.split(":");
+
+  return `${month}/${day}/${year} - ${hour}:${minute}`;
+};
+
 /*
 =================================================================================================================================
 
@@ -207,6 +227,7 @@ app.get("/outbox", async (req, res) => {
     limit,
     offset,
     username,
+    formatDate: formatDate,
   });
 });
 
@@ -263,10 +284,11 @@ app.get("/inbox", async (req, res) => {
   const [rows] = await conn.query(sql);
 
   res.render("inbox", {
-    sentEmailList: rows,
+    receivedEmailList: rows,
     limit,
     offset,
     username,
+    formatDate: formatDate,
   });
 });
 

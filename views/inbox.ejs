@@ -13,21 +13,21 @@
                 Inbox
             </h1>
             <div class="inbox-list">
-                <% sentEmailList.forEach(function(sentEmail) { %>
+                <% receivedEmailList.forEach(function(receivedEmail) { %>
                     <div class="inbox-item">
                         <div class="inbox-sender">
                             <input type="checkbox" id="inbox" name="inbox" value="yes">
                             <label for="inbox"></label>
                             <p>
-                                <%= sentEmail.sender_fullname %>
+                                <%= receivedEmail.sender_fullname %>
                             </p>
                         </div>
                         <p class="inbox-title">
-                            <%= sentEmail.subject %>
+                            <%= receivedEmail.subject %>
                         </p>
                         <div class="inbox-action">
                             <p class="inbox-time">
-                                <%= sentEmail.sent_at %>
+                                <%= formatDate(receivedEmail.sent_at) %>
                             </p>
                             <button class="btn-delete">Delete</button>
                         </div>
@@ -62,7 +62,7 @@
     }
 
     .inbox-action {
-        width: 10%;
+        width: 14%;
         text-align: right;
         display: flex;
         align-items: center;
