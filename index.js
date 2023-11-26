@@ -10,6 +10,8 @@
 
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const multer  = require('multer');
+const upload = multer({ dest: os.tmpdir() });
 const app = express();
 const { createMySQLConnection } = require("./dbconn");
 
@@ -240,6 +242,39 @@ app.get("/compose", (req, res) => {
     title: "This is a motherfucker compose page",
     username,
   });
+});
+
+// Compose API endpoint
+app.post("/compose", upload.single('attachment'), async (req, res) => {
+  try {
+    const conn = await createMySQLConnection();
+    const attachment = req.file
+
+    const { 
+      recipientId,
+      subject,
+      body
+    } = req.body;
+    const userId = getUserIdFromReq(req)
+    if (userId === undefined)
+      return res.status(400).json({ error: "Require user id in cookie" })
+    const sentAt = new Date()
+    const attachmentPath = attachment.path
+  
+    const composeSql = `
+      INSERT INTO wpr2023.email
+      (sender_id, recipient_id, subject, body, attachment_path, sent_at)
+      VALUES 
+      (?, ?, ?, ?, ?, ?)
+    `
+
+  
+    await conn.query(composeSql, [userId, recipientId, subject, body, attachmentPath, sentAt])
+    return res.status(200).json("Sucess");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
+  } 
 });
 
 /*
