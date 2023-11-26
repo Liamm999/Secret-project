@@ -2,17 +2,77 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inbox</title>
 </head>
 
 <body>
-    <%- include('layout/header', { username: username }) %>
-        <%- include('layout/menu') %>
+    <%- include('layout/header', { username: username }) %> <%- include('layout/menu') %>
             <h1>
-                <%= title %>
+                Inbox
             </h1>
+            <div class="inbox-list">
+                <% receivedEmailList.forEach(function(receivedEmail) { %>
+                    <div class="inbox-item">
+                        <div class="inbox-sender">
+                            <input type="checkbox" id="inbox" name="inbox" value="yes">
+                            <label for="inbox"></label>
+                            <p>
+                                <%= receivedEmail.sender_fullname %>
+                            </p>
+                        </div>
+                        <p class="inbox-title">
+                            <%= receivedEmail.subject %>
+                        </p>
+                        <div class="inbox-action">
+                            <p class="inbox-time">
+                                <%= formatDate(receivedEmail.sent_at) %>
+                            </p>
+                            <button class="btn-delete">Delete</button>
+                        </div>
+
+                    </div>
+                    <% }); %>
+            </div>
 </body>
+
+<style>
+    .inbox-list {
+        width: 100%;
+    }
+
+    .inbox-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+        border: 1px solid #ebeef4;
+    }
+
+    .inbox-sender {
+        width: 20%;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .inbox-title {
+        width: 70%;
+    }
+
+    .inbox-action {
+        width: 14%;
+        text-align: right;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-delete {
+        height: fit-content;
+        width: fit-content;
+    }
+</style>
 
 </html>

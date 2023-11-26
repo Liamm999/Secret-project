@@ -46,6 +46,26 @@ const getUsernameFromReq = (req) => {
   return username;
 };
 
+const formatDate = (date) => {
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  const formattedDate = formatter.format(date);
+
+  const [datePart, timePart] = formattedDate.split(", ");
+  const [month, day, year] = datePart.split("/");
+  const [hour, minute] = timePart.split(":");
+
+  return `${month}/${day}/${year} - ${hour}:${minute}`;
+};
+
 /*
 =================================================================================================================================
 
@@ -209,6 +229,7 @@ app.get("/outbox", async (req, res) => {
     limit,
     offset,
     username,
+    formatDate: formatDate,
   });
 });
 
@@ -220,11 +241,56 @@ app.get("/outbox", async (req, res) => {
 =================================================================================================================================
 */
 
-app.get("/inbox", (req, res) => {
+app.get("/inbox", async (req, res) => {
+  const userId = getUserIdFromReq(req);
   const username = getUsernameFromReq(req);
+
+  if (userId === undefined) {
+    res.render("err", { errMsg: "Require user id" });
+    return;
+  }
+
+  var limit = req.query.limit;
+  if (limit === undefined) limit = 10;
+
+  var offset = req.query.offset;
+  if (offset === undefined) offset = 0;
+
+  const sql =
+    "SELECT  \
+    wpr2023.email.id, \
+    wpr2023.email.sender_id, \
+    wpr2023.email.recipient_id, \
+    wpr2023.email.subject, \
+    wpr2023.email.body, \
+    wpr2023.email.attachment_path, \
+    wpr2023.email.sent_at, \
+    wpr2023.user.username as sender_fullname \
+    FROM wpr2023.email \
+    \
+    LEFT JOIN wpr2023.user ON  \
+    wpr2023.email.sender_id=wpr2023.user.id \
+    \
+    WHERE recipient_id= " +
+    userId +
+    " \
+    \
+    LIMIT " +
+    limit +
+    " \
+    OFFSET " +
+    offset +
+    ";";
+
+  const conn = await createMySQLConnection();
+  const [rows] = await conn.query(sql);
+
   res.render("inbox", {
-    title: "This is a motherfucker inbox",
+    receivedEmailList: rows,
+    limit,
+    offset,
     username,
+    formatDate: formatDate,
   });
 });
 

@@ -2,40 +2,77 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Outbox page</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Outbox</title>
 </head>
 
 <body>
-    <%- include('layout/header', { username: username }) %>
-        <%- include('layout/menu') %>
+    <%- include('layout/header', { username: username }) %> <%- include('layout/menu') %>
             <h1>
                 Outbox
             </h1>
-            <div>
-                <ul>
-                    <% sentEmailList.forEach(function(sentEmail) { %>
-                        <li>
-                            <div>
-                                <strong>
-                                    <%= sentEmail.recipient_fullname %>
-                                </strong>
-                            </div>
-                            <div>
-                                id: <%= sentEmail.id %>
-                            </div>
-                            <div>
-                                <span>Subject:</span>
-                                <%= sentEmail.subject %>,
-                            </div>
-                            <div>
-                                sent at: <%= sentEmail.sent_at %>,
-                            </div>
-                        </li>
-                        <% }); %>
-                </ul>
+            <div class="outbox-list">
+                <% sentEmailList.forEach(function(sentEmail) { %>
+                    <div class="outbox-item">
+                        <div class="outbox-sender">
+                            <input type="checkbox" id="outbox" name="outbox" value="yes">
+                            <label for="outbox"></label>
+                            <p>
+                                <%= sentEmail.recipient_fullname %>
+                            </p>
+                        </div>
+                        <p class="outbox-title">
+                            <%= sentEmail.subject %>
+                        </p>
+                        <div class="outbox-action">
+                            <p class="outbox-time">
+                                <%= formatDate(sentEmail.sent_at) %>
+                            </p>
+                            <button class="btn-delete">Delete</button>
+                        </div>
+
+                    </div>
+                    <% }); %>
             </div>
 </body>
+
+<style>
+    .outbox-list {
+        width: 100%;
+    }
+
+    .outbox-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+        border: 1px solid #ebeef4;
+    }
+
+    .outbox-sender {
+        width: 20%;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .outbox-title {
+        width: 70%;
+    }
+
+    .outbox-action {
+        width: 14%;
+        text-align: right;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-delete {
+        height: fit-content;
+        width: fit-content;
+    }
+</style>
 
 </html>
