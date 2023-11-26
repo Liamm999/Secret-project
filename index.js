@@ -11,7 +11,15 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const multer  = require('multer');
-const upload = multer({ dest: os.tmpdir() });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '_' + file.originalname)
+  }
+})
+const upload = multer({ storage: storage })
 const app = express();
 const { createMySQLConnection } = require("./dbconn");
 
@@ -311,7 +319,7 @@ app.get("/compose", (req, res) => {
 });
 
 // Compose API endpoint
-app.post("/compose", upload.single('attachment'), async (req, res) => {
+app.post("/send-email", upload.single('attachment'), async (req, res) => {
   try {
     const conn = await createMySQLConnection();
     const attachment = req.file
@@ -338,8 +346,8 @@ app.post("/compose", upload.single('attachment'), async (req, res) => {
     await conn.query(composeSql, [userId, recipientId, subject, body, attachmentPath, sentAt])
     return res.status(200).json("Sucess");
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal server error" });
+    console.log('Error uploading file' + error);
+    return res.status(500).json({ error: "Internal server error" + error });
   } 
 });
 
