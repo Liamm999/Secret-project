@@ -32,6 +32,8 @@ const createDatabase = async () => {
         body TEXT,
         attachment_path VARCHAR(255),
         sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        sender_deleted INT NOT NULL DEFAULT(0),
+        receiver_deleted INT NOT NULL DEFAULT(0),
         FOREIGN KEY (sender_id) REFERENCES user(id),
         FOREIGN KEY (recipient_id) REFERENCES user(id)
       )

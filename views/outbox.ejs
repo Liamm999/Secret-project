@@ -13,10 +13,13 @@
                 Outbox
             </h1>
             <div class="outbox-list">
+                <div class="btn-delete">
+                    <button id="delete">Delete</button>
+                </div>
                 <% sentEmailList.forEach(function(sentEmail) { %>
                     <div class="outbox-item">
                         <div class="outbox-sender">
-                            <input type="checkbox" id="outbox" name="outbox" value="yes">
+                            <input type="checkbox" id="outbox" name="outbox" value="<%= sentEmail.id %>">
                             <label for="outbox"></label>
                             <p>
                                 <%= sentEmail.recipient_fullname %>
@@ -29,7 +32,6 @@
                             <p class="outbox-time">
                                 <%= formatDate(sentEmail.sent_at) %>
                             </p>
-                            <button class="btn-delete">Delete</button>
                         </div>
 
                     </div>
@@ -70,9 +72,52 @@
     }
 
     .btn-delete {
-        height: fit-content;
-        width: fit-content;
+        display: flex;
+        justify-content: flex-end;
+        padding: 10px
     }
 </style>
+
+<script lang="js">
+    const outboxItems = document.querySelectorAll('div.outbox-item');
+    const deleteBtn = document.getElementById("delete");
+
+    const deleteEmail = async () => {
+        const checkedCheckboxes = document.querySelectorAll("input[name='outbox']:checked");
+        const ids = Array.from(checkedCheckboxes).map(checkbox => checkbox.value);
+
+        const outboxItemsSelected = Array.from(outboxItems).filter(function (div) {
+            return div.querySelector('input[name="outbox"]:checked');
+        });
+
+        if (ids.length <= 0) {
+            alert("Nothing to delete");
+            return
+        }
+
+        const formData = { ids: ids }
+
+        try {
+            const response = await fetch('/delete-outbox', {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            })
+            const result = await response.json()
+            if (result.error) {
+                alert(result.error)
+            } else {
+                Array.from(outboxItemsSelected).map(item => item.remove())
+            }
+        } catch (err) {
+            throw new Error(err.message)
+        }
+    }
+
+    deleteBtn.addEventListener("click", deleteEmail)
+
+</script>
 
 </html>

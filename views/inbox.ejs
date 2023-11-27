@@ -13,10 +13,13 @@
                 Inbox
             </h1>
             <div class="inbox-list">
+                <div class="btn-delete">
+                    <button id="delete">Delete</button>
+                </div>
                 <% receivedEmailList.forEach(function(receivedEmail) { %>
                     <div class="inbox-item">
                         <div class="inbox-sender">
-                            <input type="checkbox" id="inbox" name="inbox" value="yes">
+                            <input type="checkbox" id="inbox" name="inbox" value="<%= receivedEmail.id %>">
                             <label for="inbox"></label>
                             <p>
                                 <%= receivedEmail.sender_fullname %>
@@ -29,7 +32,6 @@
                             <p class="inbox-time">
                                 <%= formatDate(receivedEmail.sent_at) %>
                             </p>
-                            <button class="btn-delete">Delete</button>
                         </div>
 
                     </div>
@@ -70,9 +72,52 @@
     }
 
     .btn-delete {
-        height: fit-content;
-        width: fit-content;
+        display: flex;
+        justify-content: flex-end;
+        padding: 10px
     }
 </style>
+
+<script lang="js">
+    const inboxItems = document.querySelectorAll('div.inbox-item');
+    const deleteBtn = document.getElementById("delete");
+
+    const deleteEmail = async () => {
+        const checkedCheckboxes = document.querySelectorAll("input[name='inbox']:checked");
+        const ids = Array.from(checkedCheckboxes).map(checkbox => checkbox.value);
+
+        const inboxItemsSelected = Array.from(inboxItems).filter(function (div) {
+            return div.querySelector('input[name="inbox"]:checked');
+        });
+
+        if (ids.length <= 0) {
+            alert("Nothing to delete");
+            return
+        }
+
+        const formData = { ids: ids }
+
+        try {
+            const response = await fetch('/delete-inbox', {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            })
+            const result = await response.json()
+            if (result.error) {
+                alert(result.error)
+            } else {
+                Array.from(inboxItemsSelected).map(item => item.remove())
+            }
+        } catch (err) {
+            throw new Error(err.message)
+        }
+    }
+
+    deleteBtn.addEventListener("click", deleteEmail)
+
+</script>
 
 </html>

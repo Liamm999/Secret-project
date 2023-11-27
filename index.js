@@ -10,16 +10,16 @@
 
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const multer  = require('multer');
+const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads')
+    cb(null, "uploads");
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '_' + file.originalname)
-  }
-})
-const upload = multer({ storage: storage })
+    cb(null, Date.now() + "_" + file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
 const app = express();
 const { createMySQLConnection } = require("./dbconn");
 
@@ -212,13 +212,15 @@ app.get("/outbox", async (req, res) => {
     wpr2023.email.body, \
     wpr2023.email.attachment_path, \
     wpr2023.email.sent_at, \
+    wpr2023.email.receiver_deleted, \
     wpr2023.user.username as recipient_fullname \
     FROM wpr2023.email \
     \
     LEFT JOIN wpr2023.user ON  \
     wpr2023.email.recipient_id=wpr2023.user.id \
     \
-    WHERE sender_id= " +
+    WHERE receiver_deleted = 0 AND \
+    sender_id= " +
     userId +
     " \
     \
@@ -241,6 +243,28 @@ app.get("/outbox", async (req, res) => {
   });
 });
 
+// DELETE OUTBOX
+app.post("/delete-outbox", async (req, res) => {
+  const userId = getUserIdFromReq(req);
+  const { ids: emailIds } = req.body;
+
+  if (userId === undefined) res.render("err", { errMsg: "Require user id" });
+
+  const sql = `UPDATE wpr2023.email SET receiver_deleted = 1 WHERE id IN (?)`;
+
+  const conn = await createMySQLConnection();
+
+  try {
+    await conn.query(sql, [emailIds]);
+    return res.status(200).json({ message: "success" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
+  } finally {
+    conn.end();
+  }
+});
+
 /*
 =================================================================================================================================
 
@@ -248,7 +272,6 @@ app.get("/outbox", async (req, res) => {
 
 =================================================================================================================================
 */
-
 app.get("/inbox", async (req, res) => {
   const userId = getUserIdFromReq(req);
   const username = getUsernameFromReq(req);
@@ -273,13 +296,15 @@ app.get("/inbox", async (req, res) => {
     wpr2023.email.body, \
     wpr2023.email.attachment_path, \
     wpr2023.email.sent_at, \
+    wpr2023.email.sender_deleted, \
     wpr2023.user.username as sender_fullname \
     FROM wpr2023.email \
     \
     LEFT JOIN wpr2023.user ON  \
     wpr2023.email.sender_id=wpr2023.user.id \
     \
-    WHERE recipient_id= " +
+    WHERE sender_deleted = 0 AND \
+    recipient_id= " +
     userId +
     " \
     \
@@ -293,13 +318,35 @@ app.get("/inbox", async (req, res) => {
   const conn = await createMySQLConnection();
   const [rows] = await conn.query(sql);
 
-  res.render("inbox", {
+  return res.render("inbox", {
     receivedEmailList: rows,
     limit,
     offset,
     username,
     formatDate: formatDate,
   });
+});
+
+// DELETE INBOX
+app.post("/delete-inbox", async (req, res) => {
+  const userId = getUserIdFromReq(req);
+  const { ids: emailIds } = req.body;
+
+  if (userId === undefined) res.render("err", { errMsg: "Require user id" });
+
+  const sql = `UPDATE wpr2023.email SET sender_deleted = 1 WHERE id IN (?)`;
+
+  const conn = await createMySQLConnection();
+
+  try {
+    await conn.query(sql, [emailIds]);
+    return res.status(200).json({ message: "success" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
+  } finally {
+    conn.end();
+  }
 });
 
 /*
@@ -319,36 +366,38 @@ app.get("/compose", (req, res) => {
 });
 
 // Compose API endpoint
-app.post("/send-email", upload.single('attachment'), async (req, res) => {
+app.post("/send-email", upload.single("attachment"), async (req, res) => {
   try {
     const conn = await createMySQLConnection();
-    const attachment = req.file
+    const attachment = req.file;
 
-    const { 
-      recipientId,
-      subject,
-      body
-    } = req.body;
-    const userId = getUserIdFromReq(req)
+    const { recipientId, subject, body } = req.body;
+    const userId = getUserIdFromReq(req);
     if (userId === undefined)
-      return res.status(400).json({ error: "Require user id in cookie" })
-    const sentAt = new Date()
-    const attachmentPath = attachment.path
-  
+      return res.status(400).json({ error: "Require user id in cookie" });
+    const sentAt = new Date();
+    const attachmentPath = attachment.path;
+
     const composeSql = `
       INSERT INTO wpr2023.email
       (sender_id, recipient_id, subject, body, attachment_path, sent_at)
       VALUES 
       (?, ?, ?, ?, ?, ?)
-    `
+    `;
 
-  
-    await conn.query(composeSql, [userId, recipientId, subject, body, attachmentPath, sentAt])
+    await conn.query(composeSql, [
+      userId,
+      recipientId,
+      subject,
+      body,
+      attachmentPath,
+      sentAt,
+    ]);
     return res.status(200).json("Sucess");
   } catch (error) {
-    console.log('Error uploading file' + error);
+    console.log("Error uploading file" + error);
     return res.status(500).json({ error: "Internal server error" + error });
-  } 
+  }
 });
 
 /*
