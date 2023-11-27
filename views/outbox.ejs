@@ -26,7 +26,9 @@
                             </p>
                         </div>
                         <p class="outbox-title">
-                            <%= sentEmail.subject %>
+                            <a href="/email-detail?emailId=<%= sentEmail.id %>">
+                                <%= sentEmail.subject %>
+                            </a>
                         </p>
                         <div class="outbox-action">
                             <p class="outbox-time">
@@ -63,6 +65,11 @@
 
     .outbox-title {
         width: 70%;
+    }
+
+    .outbox-title a {
+        color: rgb(3, 3, 159);
+        text-decoration: underline
     }
 
     .outbox-action {

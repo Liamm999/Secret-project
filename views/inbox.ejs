@@ -26,7 +26,9 @@
                             </p>
                         </div>
                         <p class="inbox-title">
-                            <%= receivedEmail.subject %>
+                            <a href="/email-detail?emailId=<%= receivedEmail.id %>">
+                                <%= receivedEmail.subject %>
+                            </a>
                         </p>
                         <div class="inbox-action">
                             <p class="inbox-time">
@@ -63,6 +65,12 @@
 
     .inbox-title {
         width: 70%;
+    }
+
+
+    .inbox-title a {
+        color: rgb(3, 3, 159);
+        text-decoration: underline
     }
 
     .inbox-action {
