@@ -510,6 +510,7 @@ app.get("/email-detail", async (req, res) => {
 
   const conn = await createMySQLConnection();
   const [rows] = await conn.query(sql);
+
   if (rows.length === 0) {
     res.render("err", { errMsg: "Email not exist" });
     return;
