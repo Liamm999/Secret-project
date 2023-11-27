@@ -13,6 +13,60 @@
             <h1>
                 <%= title %>
             </h1>
+            <form action="/send-email" method="post" enctype="multipart/form-data">
+                <label for="recipients">Choose a recipient:</label>
+                <select name="recipientId" id="recipients">
+                    <% recipientList.forEach(function(recipient) { %>
+                    <option value="<%= recipient.id %>"><%= recipient.username %></option>
+                    <% }); %>
+                </select>
+
+                <br><br><br>
+                <label for="subject">Enter subject (not required):</label>
+                <textarea name="subject" id="subject">
+                </textarea>
+
+                <br><br><br>
+                <label for="body">Enter body (not required):</label>
+                <textarea name="body" id="body">
+                </textarea>
+
+                <br><br><br>
+                <label for="attachment">Choose attachment (not required):</label>
+                <input id="attachment" name="attachment" type="file" />
+
+                <br><br><br>
+                <button type="submit" id="sendEmailBtn">Send email</button>
+            </form>
 </body>
+
+<script lang="js">
+    const form = document.querySelector('form');
+    form.addEventListener('submit', handleSubmit);
+
+    /** @param {Event} event */
+    async function handleSubmit(event) {
+        const form = event.currentTarget;
+        const url = new URL(form.action);
+        const formData = new FormData(form);
+
+        const fetchOptions = {
+            method: 'POST',
+            body: formData
+        };
+
+        (async function () {
+            try {
+                await fetch(url, fetchOptions);
+                alert('Success')
+            } catch (err) {
+                alert('Error send email' + err)
+            }
+        })()
+
+        event.preventDefault();
+    }
+
+</script>
 
 </html>

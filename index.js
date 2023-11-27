@@ -247,6 +247,8 @@ app.get("/outbox", async (req, res) => {
     userId +
     " \
   \
+  ORDER BY sent_at DESC \
+  \
   LIMIT " +
     limit +
     " \
@@ -358,7 +360,9 @@ app.get("/inbox", async (req, res) => {
     WHERE sender_deleted = 0 AND \
     recipient_id= " +
     userId +
-    " \
+     " \
+    \
+    ORDER BY sent_at DESC \
     \
     LIMIT " +
     limit +
@@ -415,26 +419,35 @@ app.post("/delete-inbox", async (req, res) => {
 =================================================================================================================================
 */
 
-app.get("/compose", (req, res) => {
+app.get("/compose", async (req, res) => {
   const username = getUsernameFromReq(req);
+  const userId = getUserIdFromReq(req);
+  const recipientListSQL = `SELECT * FROM wpr2023.user WHERE NOT id=` + userId;
+  const conn = await createMySQLConnection();
+  const [rows] = await conn.query(recipientListSQL);
   res.render("compose", {
-    title: "This is a motherfucker compose page",
+    title: "Send new email",
     username,
+    recipientList: rows
   });
 });
 
 // Compose API endpoint
 app.post("/send-email", upload.single("attachment"), async (req, res) => {
   try {
-    const conn = await createMySQLConnection();
     const attachment = req.file;
 
     const { recipientId, subject, body } = req.body;
+
     const userId = getUserIdFromReq(req);
     if (userId === undefined)
       return res.status(400).json({ error: "Require user id in cookie" });
+
+    if (recipientId === undefined)
+      return res.status(400).json({ error: "Require recipient" });    
+
     const sentAt = new Date();
-    const attachmentPath = attachment.path;
+    let attachmentPath = attachment === undefined ? null : attachment.path;
 
     const composeSql = `
       INSERT INTO wpr2023.email
@@ -443,10 +456,15 @@ app.post("/send-email", upload.single("attachment"), async (req, res) => {
       (?, ?, ?, ?, ?, ?)
     `;
 
+    let finalSubject = subject
+    if (subject === undefined || subject.trim() === '')
+      finalSubject =  '(no subject)'
+
+    const conn = await createMySQLConnection();
     await conn.query(composeSql, [
       userId,
       recipientId,
-      subject,
+      finalSubject,
       body,
       attachmentPath,
       sentAt,
