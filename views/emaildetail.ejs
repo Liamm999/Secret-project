@@ -13,12 +13,80 @@
             <h1>
                 Email detail
             </h1>
-            <p>
-                <%= email.subject %>
-            </p>
-            <p>
-                <%= email.body %>
-            </p>
+            <div class="container">
+                <div class="subject-container">
+                    <p id="subject">
+                        Subject:
+                    </p>
+                    <p>
+                        <%= email.subject %>
+                    </p>
+                </div>
+
+                <div>
+                    <p>
+                        <%= email.body %>
+                    </p>
+                </div>
+                <% if (email.attachment_path.length> 0) { %>
+                    <div class="attach-container">
+                        <p>Attach: </p>
+                        <p>
+                            <a href="#">
+                                <%= email.attachment_path %>
+                            </a>
+                        </p>
+                    </div>
+                    <% } %>
+
+            </div>
+
+
 </body>
+
+<style>
+    .container {
+        padding: 12px;
+    }
+
+    .subject-container {
+        border-top: 1px dashed gray;
+        font-size: 28px;
+        display: flex;
+        gap: 6px;
+    }
+
+    .attach-container {
+        border-top: 1px solid gray;
+        display: flex;
+        gap: 6px;
+    }
+
+
+    #subject {
+        font-weight: 600;
+    }
+</style>
+
+<script>
+    const attach = document.getElementsByTagName("a")[0]
+    if (attach) {
+        const urlAttach = document.getElementsByTagName("a")[0].textContent
+        
+        attach.addEventListener("click", async () => {
+            const attach = document.getElementsByTagName("a")[0]
+            const urlAttach = document.getElementsByTagName("a")[0].textContent
+            await fetch(urlAttach)
+                .then(response => response.blob())
+                .then(blob => {
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'downloaded_image.jpg';
+                    link.click();
+                });
+        });
+    }
+
+</script>
 
 </html>
