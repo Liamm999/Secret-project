@@ -37,6 +37,8 @@
                     </div>
                     <% }); %>
             </div>
+            <%- include('layout/pagination', { currentPage: new Number(currentPage), totalPages: totalPages ,
+                url: "/inbox" }) %>
 </body>
 
 <style>

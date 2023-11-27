@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div>
+        <% if (totalPages> 1) { %>
+            <div class="pagination">
+                <% if (currentPage> 1) { %>
+                    <a href="<%= `${url}?page=${currentPage - 1}` %>">&laquo</a>
+                    <% } %>
+
+                        <% for (let i=1; i <=totalPages; i++) { %>
+                            <% if (i===currentPage) { %>
+                                <span class="current-page">
+                                    <%= i %>
+                                </span>
+                                <% } else { %>
+                                    <span class="page">
+                                        <a href="<%= `${url}?page=${i}` %>">
+                                            <%= i %>
+                                        </a>
+                                    </span>
+                                    <% } %>
+                                        <% } %>
+
+                                            <% if (currentPage < totalPages) { %>
+                                                <a href="<%= `${url}?page=${currentPage + 1}` %>">&raquo;</a>
+                                                <% } %>
+            </div>
+            <% } %>
+    </div>
+
+
+
+</body>
+
+<style>
+    .pagination {
+        width: 100%;
+        margin-top: 6px;
+        height: max-content;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        text-align: center;
+    }
+
+    a {
+        font-size: larger;
+        text-decoration: none;
+        color: black;
+    }
+
+    .page {
+        width: 20px;
+        height: 20px;
+        padding: 4px;
+        background-color: gray;
+    }
+
+    .current-page {
+        width: 20px;
+        height: 20px;
+        padding: 4px;
+        background-color: red;
+    }
+</style>
+
+</html>

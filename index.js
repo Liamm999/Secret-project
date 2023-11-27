@@ -191,6 +191,7 @@ app.post("/signout", (req, res) => {
 app.get("/outbox", async (req, res) => {
   const userId = getUserIdFromReq(req);
   const username = getUsernameFromReq(req);
+  const page = req.query.page || 1;
 
   if (userId === undefined) {
     res.render("err", { errMsg: "Require user id" });
@@ -198,40 +199,66 @@ app.get("/outbox", async (req, res) => {
   }
 
   var limit = req.query.limit;
-  if (limit === undefined) limit = 10;
+  if (limit === undefined) limit = 5;
 
   var offset = req.query.offset;
-  if (offset === undefined) offset = 0;
+  if (offset === undefined) offset = page;
+
+  const getAllOutboxSql =
+    "SELECT  \
+  wpr2023.email.id, \
+  wpr2023.email.sender_id, \
+  wpr2023.email.recipient_id, \
+  wpr2023.email.subject, \
+  wpr2023.email.body, \
+  wpr2023.email.attachment_path, \
+  wpr2023.email.sent_at, \
+  wpr2023.email.receiver_deleted, \
+  wpr2023.user.username as recipient_fullname \
+  FROM wpr2023.email \
+  \
+  LEFT JOIN wpr2023.user ON  \
+  wpr2023.email.recipient_id=wpr2023.user.id \
+  \
+  WHERE receiver_deleted = 0 AND \
+  sender_id= " +
+    userId +
+    " \
+";
 
   const sql =
     "SELECT  \
-    wpr2023.email.id, \
-    wpr2023.email.sender_id, \
-    wpr2023.email.recipient_id, \
-    wpr2023.email.subject, \
-    wpr2023.email.body, \
-    wpr2023.email.attachment_path, \
-    wpr2023.email.sent_at, \
-    wpr2023.email.receiver_deleted, \
-    wpr2023.user.username as recipient_fullname \
-    FROM wpr2023.email \
-    \
-    LEFT JOIN wpr2023.user ON  \
-    wpr2023.email.recipient_id=wpr2023.user.id \
-    \
-    WHERE receiver_deleted = 0 AND \
-    sender_id= " +
+  wpr2023.email.id, \
+  wpr2023.email.sender_id, \
+  wpr2023.email.recipient_id, \
+  wpr2023.email.subject, \
+  wpr2023.email.body, \
+  wpr2023.email.attachment_path, \
+  wpr2023.email.sent_at, \
+  wpr2023.email.receiver_deleted, \
+  wpr2023.user.username as recipient_fullname \
+  FROM wpr2023.email \
+  \
+  LEFT JOIN wpr2023.user ON  \
+  wpr2023.email.recipient_id=wpr2023.user.id \
+  \
+  WHERE receiver_deleted = 0 AND \
+  sender_id= " +
     userId +
     " \
-    \
-    LIMIT " +
+  \
+  LIMIT " +
     limit +
     " \
-    OFFSET " +
+  OFFSET " +
     offset +
     ";";
 
   const conn = await createMySQLConnection();
+
+  const [allOutbox] = await conn.query(getAllOutboxSql);
+  const totalPages = Math.ceil(allOutbox.length / limit);
+
   const [rows] = await conn.query(sql);
 
   res.render("outbox", {
@@ -239,6 +266,8 @@ app.get("/outbox", async (req, res) => {
     limit,
     offset,
     username,
+    totalPages: totalPages,
+    currentPage: page,
     formatDate: formatDate,
   });
 });
@@ -275,6 +304,7 @@ app.post("/delete-outbox", async (req, res) => {
 app.get("/inbox", async (req, res) => {
   const userId = getUserIdFromReq(req);
   const username = getUsernameFromReq(req);
+  const page = req.query.page || 1;
 
   if (userId === undefined) {
     res.render("err", { errMsg: "Require user id" });
@@ -282,10 +312,32 @@ app.get("/inbox", async (req, res) => {
   }
 
   var limit = req.query.limit;
-  if (limit === undefined) limit = 10;
+  if (limit === undefined) limit = 5;
 
   var offset = req.query.offset;
-  if (offset === undefined) offset = 0;
+  if (offset === undefined) offset = page;
+
+  const getAllInboxSql =
+    "SELECT  \
+  wpr2023.email.id, \
+  wpr2023.email.sender_id, \
+  wpr2023.email.recipient_id, \
+  wpr2023.email.subject, \
+  wpr2023.email.body, \
+  wpr2023.email.attachment_path, \
+  wpr2023.email.sent_at, \
+  wpr2023.email.sender_deleted, \
+  wpr2023.user.username as sender_fullname \
+  FROM wpr2023.email \
+  \
+  LEFT JOIN wpr2023.user ON  \
+  wpr2023.email.sender_id=wpr2023.user.id \
+  \
+  WHERE sender_deleted = 0 AND \
+  recipient_id= " +
+    userId +
+    " \
+  ";
 
   const sql =
     "SELECT  \
@@ -316,6 +368,10 @@ app.get("/inbox", async (req, res) => {
     ";";
 
   const conn = await createMySQLConnection();
+
+  const [allInbox] = await conn.query(getAllInboxSql);
+  const totalPages = Math.ceil(allInbox.length / limit);
+
   const [rows] = await conn.query(sql);
 
   return res.render("inbox", {
@@ -323,6 +379,8 @@ app.get("/inbox", async (req, res) => {
     limit,
     offset,
     username,
+    totalPages: totalPages,
+    currentPage: page,
     formatDate: formatDate,
   });
 });
