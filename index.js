@@ -26,7 +26,7 @@ const { createMySQLConnection } = require("./dbconn");
 app.set("view engine", "ejs");
 
 // stattic files inside public folder
-app.use(express.static("public"));
+app.use('*/uploads',express.static('uploads'));
 
 app.use(
   express.urlencoded({
@@ -202,7 +202,7 @@ app.get("/outbox", async (req, res) => {
   if (limit === undefined) limit = 5;
 
   var offset = req.query.offset;
-  if (offset === undefined) offset = page;
+  if (offset === undefined) offset = page - 1;
 
   const getAllOutboxSql =
     "SELECT  \
@@ -317,7 +317,7 @@ app.get("/inbox", async (req, res) => {
   if (limit === undefined) limit = 5;
 
   var offset = req.query.offset;
-  if (offset === undefined) offset = page;
+  if (offset === undefined) offset = page - 1;
 
   const getAllInboxSql =
     "SELECT  \
